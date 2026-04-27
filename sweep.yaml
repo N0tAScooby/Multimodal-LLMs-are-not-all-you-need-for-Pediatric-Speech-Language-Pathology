@@ -1,0 +1,53 @@
+program: hyperparam_tuning_slp_audio.py
+method: bayes
+run_cap: 20
+metric:
+  name: eval/f1_macro
+  goal: maximize
+
+command:
+  - ${env}
+  - python3
+  - ${program}
+  - ${args}
+
+
+parameters:
+  target_column:
+    value: "disorder_symptom"  ## needs to be changed per task
+
+  exclude_healthy:
+    value: true
+  aug_male:
+    values: [false,true]
+  aug_female:
+    values: [false, true]
+  epochs:
+    value: 15
+  
+  model_checkpoint:
+    values:
+      #- "microsoft/wavlm-large"
+      #- "facebook/wav2vec2-large"
+      - "facebook/wav2vec2-base"
+      #- "facebook/hubert-large-ll60k"
+  
+  learning_rate:
+    distribution: log_uniform_values
+    min: 1e-5
+    max: 1e-3
+  
+  oversample_mult:
+    values: [1,3, 5, 8]
+    
+  pitch_prob:
+    values: [0.2, 0.3, 0.5]
+    
+  gradient_accumulation:
+    values: [2, 4, 6] 
+    
+  pitch_shift_min:
+    values: [0,1,3,4]
+  
+  pitch_shift_max:
+    values: [0,4,6,8]
